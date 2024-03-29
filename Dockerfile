@@ -21,9 +21,7 @@ RUN apt update && \
         libc6 \
         libgcc1 \
         libgssapi-krb5-2 \
-        libicu[0-9][0-9] \
         libkrb5-3 \
-        liblttng-ust[0-9] \
         libstdc++6 \
         locales \
         lsb-release \
