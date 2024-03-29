@@ -1,7 +1,53 @@
 FROM debian:latest
 
 RUN apt update && \
-    apt install -y unzip wget cmake ninja-build git git-lfs && \
+    apt install -y \
+        apt-transport-https \
+        apt-utils \
+        bzip2 \
+        ca-certificates \
+        cmake \
+        curl \
+        dialog \
+        dirmngr \
+        git-lfs \
+        git \
+        gnupg2 \
+        htop \
+        init-system-helpers \
+        iproute2 \
+        jq \
+        less \
+        libc6 \
+        libgcc1 \
+        libgssapi-krb5-2 \
+        libicu[0-9][0-9] \
+        libkrb5-3 \
+        liblttng-ust[0-9] \
+        libstdc++6 \
+        locales \
+        lsb-release \
+        lsof \
+        man-db \
+        manpages-dev \
+        manpages \
+        nano \
+        ncdu \
+        net-tools \
+        ninja-build \
+        openssh-client \
+        procps \
+        psmisc \
+        rsync \
+        strace \
+        sudo \
+        tree \
+        unzip \
+        vim-tiny \
+        wget \
+        xz-utils \
+        zip \
+        zlib1g && \
     wget "https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/powershell_7.4.1-1.deb_amd64.deb" -O powershell.deb && \
     dpkg -i powershell.deb && \
     rm powershell.deb && \
