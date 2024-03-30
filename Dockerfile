@@ -62,11 +62,6 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/download/v1.1.
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
-RUN groupadd -g 1000 codespace && \
-    useradd -u 1000 -g codespace -m -s /bin/bash codespace
-    
-USER codespace
-
 ENV ANDROID_NDK_HOME=/android-ndk-r27-canary
 
 
