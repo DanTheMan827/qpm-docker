@@ -62,8 +62,8 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/download/v1.1.
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
-RUN groupadd -r codespace && \
-    useradd -r -g codespace -m -s /bin/bash codespace
+RUN groupadd -g 1000 codespace && \
+    useradd -u 1000 -g codespace -m -s /bin/bash codespace
     
 USER codespace
 
