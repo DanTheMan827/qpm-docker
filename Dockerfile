@@ -57,7 +57,7 @@ RUN wget "https://github.com/QuestPackageManager/ndk-canary-archive/releases/dow
     unzip -o "ndk.zip" -d "/" && \
     rm "ndk.zip"
 
-RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/download/v1.1.0/qpm-linux-x64.zip" -O "qpm.zip" && \
+RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/download/v1.3.1/qpm-linux-x64.zip" -O "qpm.zip" && \
     unzip -o "qpm.zip" -d /usr/bin && \
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
