@@ -69,7 +69,7 @@ RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/release
     rm "clangd.zip" && \
     chmod -R +rx && /clangd \
     mv /clangd/*/* /clangd && \
-    rmdir /clangd/* || true
+    (rmdir /clangd/* || true)
 
 ENV PATH="$PATH:/clangd/bin"
 ENV ANDROID_NDK_HOME=/android-ndk-r27-canary
