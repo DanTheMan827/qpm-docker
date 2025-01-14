@@ -67,7 +67,7 @@ RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/release
     mkdir -p /clangd && \
     unzip -o "clangd.zip" -d /clangd && \
     rm "clangd.zip" && \
-    chmod -R +rx && /clangd \
+    chmod -R +rx /clangd \ &&
     mv /clangd/*/* /clangd && \
     (rmdir /clangd/* || true)
 
