@@ -62,6 +62,16 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
+RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/releases/latest | jq -r '.assets[] | select(.name | contains("clangd-linux")) | .browser_download_url')" && \
+    wget "$LATEST_RELEASE" -O "clangd.zip" && \
+    mkdir -p /clangd && \
+    unzip -o "clangd.zip" -d /clangd && \
+    rm "clangd.zip" && \
+    chmod +rx && \
+    mv /clangd/*/* /clangd && \
+    rmdir /clangd/* || true
+
+ENV PATH="$PATH:/clangd/bin"
 ENV ANDROID_NDK_HOME=/android-ndk-r27-canary
 
 
