@@ -22,6 +22,7 @@ RUN apt update && \
         libc6 \
         libgcc1 \
         libgssapi-krb5-2 \
+        libicu \
         libkrb5-3 \
         libstdc++6 \
         locales \
