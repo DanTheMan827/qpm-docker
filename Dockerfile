@@ -7,6 +7,7 @@ RUN apt update && \
         apt-utils \
         bzip2 \
         ca-certificates \
+        clangd \
         cmake \
         curl \
         dialog \
@@ -22,7 +23,7 @@ RUN apt update && \
         libc6 \
         libgcc1 \
         libgssapi-krb5-2 \
-        libicu \
+        libicu-dev \
         libkrb5-3 \
         libstdc++6 \
         locales \
@@ -47,8 +48,10 @@ RUN apt update && \
         wget \
         xz-utils \
         zip \
-        zlib1g && \
-    wget "https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/powershell_7.4.1-1.deb_amd64.deb" -O powershell.deb && \
+        zlib1g
+
+RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq -r '.assets[] | select(.name | contains("deb_amd64.deb")) | .browser_download_url')" && \
+    wget "$LATEST_RELEASE" -O "powershell.deb" && \
     dpkg -i powershell.deb && \
     rm powershell.deb && \
     apt update && \
@@ -59,16 +62,6 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
-RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/releases/latest | jq -r '.assets[] | select(.name | contains("clangd-linux")) | .browser_download_url')" && \
-    wget "$LATEST_RELEASE" -O "clangd.zip" && \
-    mkdir -p /clangd && \
-    unzip -o "clangd.zip" -d /clangd && \
-    rm "clangd.zip" && \
-    chmod -R +rx /clangd && \
-    mv /clangd/*/* /clangd && \
-    (rmdir /clangd/* || true)
-
-ENV PATH="$PATH:/clangd/bin"
 ENV ANDROID_NDK_HOME=/android-ndk-r27-canary
 
 
