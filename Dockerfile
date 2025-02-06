@@ -62,8 +62,11 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
+RUN qpm ndk download 27 && \
+    mv /home/root/.local/share/QPM-RS/ndk/* /ndk
+
 RUN userdel -r ubuntu
 
-ENV ANDROID_NDK_HOME=/android-ndk-r27-canary
+ENV ANDROID_NDK_HOME=/ndk
 
 
