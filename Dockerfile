@@ -63,7 +63,8 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
     rm "qpm.zip"
 
 RUN qpm ndk download 27 && \
-    mv /home/root/.local/share/QPM-RS/ndk/* /ndk
+    mv /root/.local/share/QPM-RS/ndk/* /ndk && \
+    rm -rf /root/.local/share/QPM-RS
 
 RUN userdel -r ubuntu
 
