@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM ubuntu:latest
 
 RUN apt update && \
     apt upgrade -y && \
@@ -52,10 +52,6 @@ RUN apt update && \
     rm powershell.deb && \
     apt update && \
     apt install powershell
-
-RUN wget "https://github.com/QuestPackageManager/ndk-canary-archive/releases/download/27.0.1/android-ndk-10883340-linux-x86_64.zip" -O "ndk.zip" && \
-    unzip -o "ndk.zip" -d "/" && \
-    rm "ndk.zip"
 
 RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux-x64.zip" -O "qpm.zip" && \
     unzip -o "qpm.zip" -d /usr/bin && \
