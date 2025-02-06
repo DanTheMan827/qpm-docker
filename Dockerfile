@@ -69,6 +69,5 @@ RUN mkdir /ndk/ && \
 
 RUN userdel -r ubuntu
 
-ENV ANDROID_NDK_HOME=/ndk
-
-
+# Set the ENTRYPOINT to bash with ANDROID_NDK_HOME set to the first folder in /ndk
+ENTRYPOINT ["sh", "-c", "export ANDROID_NDK_HOME=\"$(ls -d /ndk/* | head -n 1)\" && exec bash"]
