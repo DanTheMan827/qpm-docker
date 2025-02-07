@@ -65,7 +65,7 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
 RUN mkdir /ndk/ && \
     qpm config ndk-path /ndk/ && \
     qpm ndk download 27 && \
-    chmod +rwx /ndk
+    chmod go+rwx /ndk
 
 RUN userdel -r ubuntu
 
