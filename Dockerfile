@@ -7,7 +7,6 @@ RUN apt update && \
         apt-utils \
         bzip2 \
         ca-certificates \
-        clangd \
         cmake \
         curl \
         dialog \
@@ -56,6 +55,16 @@ RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/PowerShell/PowerShell
     rm powershell.deb && \
     apt update && \
     apt install powershell
+
+RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/releases/latest | jq -r '.assets[] | select(.name | contains("clangd-linux")) | .browser_download_url')" && \
+    wget "$LATEST_RELEASE" -O "clangd.zip" && \
+    mkdir -p /clangd && \
+    unzip -o "clangd.zip" -d /clangd && \
+    rm "clangd.zip" && \
+    chmod -R +rx /clangd && \
+    mv /clangd/*/* /clangd && \
+    (rmdir /clangd/* || true)
+ENV PATH="$PATH:/clangd/bin"
 
 RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux-x64.zip" -O "qpm.zip" && \
     unzip -o "qpm.zip" -d /usr/bin && \
