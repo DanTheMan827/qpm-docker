@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian:latest
 
 RUN apt update && \
     apt upgrade -y && \
@@ -71,10 +71,10 @@ RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/downloa
     chmod +rx /usr/bin/qpm && \
     rm "qpm.zip"
 
-RUN mkdir /ndk/ && \
-    qpm config ndk-path /ndk/ && \
-    qpm ndk download 27 && \
-    chmod go+rwx /ndk
+# RUN mkdir /ndk/ && \
+#     qpm config ndk-path /ndk/ && \
+#     qpm ndk download 27 && \
+#     chmod go+rwx /ndk
 
 RUN userdel -r ubuntu
 
