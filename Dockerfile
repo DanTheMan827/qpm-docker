@@ -1,82 +1,90 @@
-FROM ubuntu:latest
+FROM alpine:latest AS qpm
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt install -y \
-        apt-transport-https \
-        apt-utils \
+RUN set -x && \
+    apk add --no-cache \
+        rustup  \
+        openssl-dev \
+        libssl3 \
+        curl \
+        git \
+        jq
+
+ENV OPENSSL_DIR=/usr
+ENV OPENSSL_LIB_DIR=/usr/lib
+ENV OPENSSL_INCLUDE_DIR=/usr/include
+ENV OPENSSL_STATIC=0
+
+RUN set -x && \
+    rustup-init -y && \
+    . "$HOME/.cargo/env" && \
+    rustup default nightly && \
+    rustup show
+
+RUN set -x && \
+    . "$HOME/.cargo/env" && \
+    export OPENSSL_DIR=/usr && \
+    export OPENSSL_LIB_DIR=/usr/lib && \
+    export OPENSSL_INCLUDE_DIR=/usr/include && \
+    export OPENSSL_STATIC=0 && \
+    mkdir -p /qpm-temp && \
+    cd /qpm-temp && \
+    latest_tag=$(curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest | jq -r .tag_name) && \
+    git clone --branch "$latest_tag" --single-branch https://github.com/QuestPackageManager/QPM.CLI.git . && \
+    cargo build --release && \
+    chmod +rx target/release/qpm
+
+FROM alpine:latest
+
+RUN set -x && \
+    apk add --no-cache \
+        bash \
         bzip2 \
         ca-certificates \
         cmake \
         curl \
-        dialog \
-        dirmngr \
+        file \
+        gcompat \
         git-lfs \
         git \
-        gnupg2 \
         htop \
-        init-system-helpers \
-        iproute2 \
         jq \
         less \
-        libc6 \
-        libgcc1 \
-        libgssapi-krb5-2 \
-        libicu-dev \
-        libkrb5-3 \
-        libstdc++6 \
-        locales \
-        lsb-release \
+        libcrypto3 \
+        libssl3 \
         lsof \
         man-db \
-        manpages-dev \
-        manpages \
         nano \
-        ncdu \
-        net-tools \
         ninja-build \
-        openssh-client \
-        procps \
-        psmisc \
-        rsync \
-        strace \
+        powershell \
         sudo \
         tree \
         unzip \
-        vim-tiny \
+        vim \
         wget \
-        xz-utils \
-        zip \
-        zlib1g
+        xz \
+        zip
 
-RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest | jq -r '.assets[] | select(.name | contains("deb_amd64.deb")) | .browser_download_url')" && \
-    wget "$LATEST_RELEASE" -O "powershell.deb" && \
-    dpkg -i powershell.deb && \
-    rm powershell.deb && \
-    apt update && \
-    apt install powershell
-
-RUN LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/releases/latest | jq -r '.assets[] | select(.name | contains("clangd-linux")) | .browser_download_url')" && \
+RUN set -x && \
+    LATEST_RELEASE="$(curl -s https://api.github.com/repos/clangd/clangd/releases/latest | jq -r '.assets[] | select(.name | contains("clangd-linux")) | .browser_download_url')" && \
     wget "$LATEST_RELEASE" -O "clangd.zip" && \
     mkdir -p /clangd && \
     unzip -o "clangd.zip" -d /clangd && \
     rm "clangd.zip" && \
     chmod -R +rx /clangd && \
     mv /clangd/*/* /clangd && \
-    (rmdir /clangd/* || true)
+    (rmdir /clangd/* || true) && \
+    echo 'export PATH="$PATH:/clangd/bin"' >> /etc/profile
 ENV PATH="$PATH:/clangd/bin"
 
-RUN wget "https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux-x64.zip" -O "qpm.zip" && \
-    unzip -o "qpm.zip" -d /usr/bin && \
-    chmod +rx /usr/bin/qpm && \
-    rm "qpm.zip"
+COPY --from=qpm /qpm-temp/target/release/qpm /usr/bin/qpm
 
-RUN mkdir /ndk/ && \
+RUN set -x && \
+    mkdir /ndk/ && \
     qpm config ndk-path /ndk/ && \
     qpm ndk download 27 && \
-    chmod go+rwx /ndk
+    chmod go+rwx /ndk && \
+    echo "export ANDROID_NDK_HOME=\"$(ls -d /ndk/* | sort -r | head -n 1)\"" >> /etc/profile
 
-RUN userdel -r ubuntu
 
-# Set the ENTRYPOINT to bash with ANDROID_NDK_HOME set to the first folder in /ndk
-ENTRYPOINT ["sh", "-c", "export ANDROID_NDK_HOME=\"$(ls -d /ndk/* | sort -r | head -n 1)\" && exec bash"]
+
+ENTRYPOINT ["bash"]
