@@ -7,6 +7,7 @@ RUN set -x && \
         libssl3 \
         curl \
         git \
+        build-base \
         jq
 
 ENV OPENSSL_DIR=/usr
